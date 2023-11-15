@@ -28,10 +28,6 @@ public class TestTouch : MonoBehaviour
 
     private Coroutine coroutine;
 
-    //Sprite renderer
-    [SerializeField]
-    private SpriteRenderer spriteRenderer;
-
     private void Awake()
     {
         inputManager = InputManager.Instance;
@@ -91,12 +87,14 @@ public class TestTouch : MonoBehaviour
             {
                 if (useTrail)
                 {
+                    transform.position = targetPosition;
                     trail.transform.position = inputPosition;
                 }
                 
                 targetPosition = inputPosition;
             }
 
+            /*
             Vector2 direction = targetPosition - startPosition;
             if (Vector2.Dot(Vector2.right, direction) > directionThreshold)
             {
@@ -106,6 +104,7 @@ public class TestTouch : MonoBehaviour
             {
                 spriteRenderer.flipX = false;
             }
+            */
 
             yield return null;
         }
@@ -113,7 +112,7 @@ public class TestTouch : MonoBehaviour
 
     private void SwipeEnd(Vector2 position, float time)
     {
-        trail.SetActive(false);
+        //trail.SetActive(false);
         StopCoroutine(coroutine);
 
         endPosition = Utils.ScreenToWorld(cameraMain, position);
@@ -139,18 +138,20 @@ public class TestTouch : MonoBehaviour
         else if (Vector2.Dot(Vector2.left, direction) > directionThreshold)
         {
             Debug.Log("Swipe Left");
-            spriteRenderer.flipX = false;
+            //spriteRenderer.flipX = false;
         }
         else if (Vector2.Dot(Vector2.right, direction) > directionThreshold)
         {
             Debug.Log("Swipe Right");
-            spriteRenderer.flipX = true;
+            //spriteRenderer.flipX = true;
         }
     }
 
     private void Update()
     {
-        float step = speed * Time.deltaTime;
-        transform.position = Vector2.MoveTowards(transform.position, targetPosition, step);
+        //float step = speed * Time.deltaTime;
+        //transform.position = Vector2.MoveTowards(transform.position, targetPosition, step);
+        
+        //transform.position = targetPosition;
     }
 }
