@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e77331b1314ba1c41b18b926e6ffffc3, type: 3}
+  m_Name: AIUEO
+  m_EditorClassIdentifier: 
+  ID: G00
+  group: AIUEO
+  pool:
+  - {fileID: 11400000, guid: 40be3a0e9b21b514581481a086e34bef, type: 2}
+  - {fileID: 11400000, guid: 945b52746891bec4cbbade96168018e1, type: 2}
+  - {fileID: 11400000, guid: a25d977f1d2bd8f4abd636671e77ef45, type: 2}
+  - {fileID: 11400000, guid: 3d2a6d1a3806dbd4b9e00fee2aaff83b, type: 2}
+  - {fileID: 11400000, guid: 0c48348ec1288064a88afbfe2c62654e, type: 2}
