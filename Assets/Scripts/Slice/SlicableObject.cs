@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using DG.Tweening;
 
 public class SlicableObject : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class SlicableObject : MonoBehaviour
     private GameObject slicedObject;
     [Header("Effect prefab")]
     public GameObject slicedEffect;
+    public SpriteRenderer unslicedSprite;
 
     public bool isSlicable = true;
 
@@ -26,19 +28,37 @@ public class SlicableObject : MonoBehaviour
         return slicedObject;
     }
 
-    public void Slice(Collider2D collision)
+    public void CollisionDetected()
+    {
+        OnSliced?.Invoke(gameObject);
+    }
+
+    public void Slice()
     {
         if (isSlicable)
         {
             //Debug.Log("Sliced!");
             //Event
-            OnSliced?.Invoke(gameObject);
             unslicedObject.SetActive(false);
             slicedObject.SetActive(true);
 
             //Effect
             //slicedEffect.transform.position = collision.transform.position;
             slicedEffect.SetActive(true);
+
+            SoundManager.Instance.PlaySound("QuizRight",0.75f);
+        }
+    }
+
+    public void WrongSlice()
+    {
+        if (isSlicable)
+        {
+            unslicedSprite.color = new Color(0.75f,0,0,0.5f);
+            unslicedSprite.transform.DOShakeRotation(0.75f,new Vector3(0,0,30f),5);
+            isSlicable = false;
+
+            SoundManager.Instance.PlaySound("QuizWrong", 0.75f);
         }
     }
 }

@@ -8,7 +8,6 @@ public class TestTouch : MonoBehaviour
     private Camera cameraMain;
 
     public float speed = 10.0f;
-    public Vector2 targetPosition;
     public bool noLimit = true;
     public float minX = -15f;
     public float maxX = 15f;
@@ -22,7 +21,7 @@ public class TestTouch : MonoBehaviour
     private float endTime;
     [SerializeField, Range(0f, 1f)]
     private float directionThreshold = .9f;
-    public bool useTrail = true;
+    public bool enableMove = true;
     [SerializeField]
     private GameObject trail;
 
@@ -32,7 +31,6 @@ public class TestTouch : MonoBehaviour
     {
         inputManager = InputManager.Instance;
         cameraMain = Camera.main;
-        targetPosition = transform.position;
     }
 
     private void OnEnable()
@@ -61,18 +59,12 @@ public class TestTouch : MonoBehaviour
         Vector3 worldCoordinates = cameraMain.ScreenToWorldPoint(screenCoordinates);
         worldCoordinates.z = 0;
         //transform.position = worldCoordinates;
-        targetPosition = worldCoordinates;
     }
 
     private void SwipeStart(Vector2 position, float time)
     {
         startPosition = Utils.ScreenToWorld(cameraMain, position);
         startTime = time;
-        if (useTrail)
-        {
-            trail.SetActive(true);
-            trail.transform.position = startPosition;
-        }
         coroutine = StartCoroutine(Trail());
     }
 
@@ -85,13 +77,12 @@ public class TestTouch : MonoBehaviour
             //Not update the position if above limit
             if((inputPosition.x <= maxX && inputPosition.x >= minX && inputPosition.y <= maxY && inputPosition.y >= minY)||noLimit)
             {
-                if (useTrail)
+                if (enableMove)
                 {
-                    transform.position = targetPosition;
+                    transform.position = inputPosition;
                     trail.transform.position = inputPosition;
                 }
-                
-                targetPosition = inputPosition;
+               
             }
 
             /*

@@ -1384,6 +1384,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unslicedObject: {fileID: 6240037939916540048}
   slicedEffect: {fileID: 4762296842876515467}
+  unslicedSprite: {fileID: 6240037939916540050}
   isSlicable: 1
 --- !u!114 &3598721518609570816
 MonoBehaviour:

@@ -12,7 +12,8 @@ public class ShakeBehavior : MonoBehaviour
     private float shakeDuration = 0f;
 
     // A measure of magnitude for the shake. Tweak based on your preference
-    private float shakeMagnitude = 0.7f;
+    [Range(0,1f)]
+    public float shakeMagnitude = 0.7f;
 
     // A measure of how quickly the shake effect should evaporate
     private float dampingSpeed = 1.0f;
@@ -22,6 +23,7 @@ public class ShakeBehavior : MonoBehaviour
 
     //Event
     public static event Action<float> ShakeEvent;
+    public static void InvokeShakeEvent(float duration) { ShakeEvent?.Invoke(duration); }
 
     void Awake()
     {

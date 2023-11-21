@@ -15,7 +15,8 @@ public class Hitbox : MonoBehaviour
             if (slicable.GetSlicedObject() == null)
             {
                 slicable.SetSlicedObject(sliced);
-                slicable.Slice(collision);
+                slicable.CollisionDetected();
+                //slicable.Slice(collision);
             }
         }
     }

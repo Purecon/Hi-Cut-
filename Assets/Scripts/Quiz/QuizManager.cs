@@ -24,7 +24,10 @@ public class QuizManager : MonoBehaviour
     [Header("Player Assets")]
     public TestTouch touchInput;
     public GameObject playerCursor;
+    public Animator playerCharAnimator;
     Vector2 cursorOrigin;
+
+    bool nextGroup = true;
 
     private void OnEnable()
     {
@@ -35,10 +38,13 @@ public class QuizManager : MonoBehaviour
     {
         Debug.LogFormat("Object sliced! {0}", panel.name);
         SlicablePanelDisplay display = panel.GetComponent<SlicablePanelDisplay>();
+        SlicableObject sliceObj = panel.GetComponent<SlicableObject>();
 
-        if(display.displayText.text == currentQuestion.answer)
+        if (display.displayText.text == currentQuestion.answer)
         {
             Debug.Log("Answer correct 正解");
+
+            sliceObj.Slice();
 
             foreach (SlicablePanelDisplay dp in displays)
             {
@@ -54,6 +60,9 @@ public class QuizManager : MonoBehaviour
         else
         {
             Debug.Log("Answer wrong ブー"); //不正解
+
+            //ShakeBehavior.InvokeShakeEvent(1f);
+            sliceObj.WrongSlice();
         }
     }
 
@@ -61,7 +70,8 @@ public class QuizManager : MonoBehaviour
     {
         SetupPanel();
 
-        currentGroupIndex = Random.Range(0, groups.Count);
+        //currentGroupIndex = Random.Range(0, groups.Count);
+        currentGroupIndex = 0;
         currentGroup = groups[currentGroupIndex];
         currentQuestionIndex = Random.Range(0, currentGroup.pool.Count);
         currentQuestion = currentGroup.pool[currentQuestionIndex];
@@ -87,8 +97,8 @@ public class QuizManager : MonoBehaviour
     public void DisplayQuiz()
     {
         Debug.LogFormat("[Group {0}]", currentGroup);
-        Debug.LogFormat("[Question {0}]", currentQuestion.ID);
-        Debug.LogFormat("What is {0}? Answer: {1}", currentQuestion.question,currentQuestion.answer);
+        //Debug.LogFormat("[Question {0}]", currentQuestion.ID);
+        //Debug.LogFormat("What is {0}? Answer: {1}", currentQuestion.question,currentQuestion.answer);
         qText.text = currentQuestion.question;
 
         List<string> answers = new List<string>();
@@ -123,12 +133,39 @@ public class QuizManager : MonoBehaviour
     IEnumerator NextQuestion()
     {
         //Reset cursor
+        playerCharAnimator.SetBool("IsAttacking", true);
         touchInput.StopSwipe(cursorOrigin, 0f);
+        touchInput.enableMove = false;
         playerCursor.transform.position = cursorOrigin;
+        playerCursor.SetActive(false);
+
         yield return new WaitForSeconds(2f);
+        playerCharAnimator.SetBool("IsAttacking", false);
+        playerCursor.SetActive(true);
 
         if (askedQuestion.Count == currentGroup.pool.Count)
         {
+            //NOTE: Currently used this instead of different level (subject to change)
+            if (nextGroup)
+            {
+                if (askedGroup.Count != groups.Count)
+                {
+                    currentGroupIndex++;
+                    currentGroup = groups[currentGroupIndex];
+                    askedGroup.Add(currentGroupIndex);
+                    Debug.LogFormat("[Group {0}]", currentGroup);
+
+                    askedQuestion = new List<int>();
+                    currentQuestionIndex = Random.Range(0, currentGroup.pool.Count);
+                    currentQuestion = currentGroup.pool[currentQuestionIndex];
+                    askedQuestion.Add(currentQuestionIndex);
+
+                    touchInput.enableMove = true;
+                    CleanPanel();
+                    DisplayQuiz();
+                    yield return null;
+                }
+            }
             yield return null;
         }
         else
@@ -143,7 +180,8 @@ public class QuizManager : MonoBehaviour
                 }
             }
             askedQuestion.Add(currentQuestionIndex);
-            
+
+            touchInput.enableMove = true;
             CleanPanel();
             DisplayQuiz();
             yield return null;
