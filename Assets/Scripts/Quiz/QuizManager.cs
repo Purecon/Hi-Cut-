@@ -17,8 +17,14 @@ public class QuizManager : MonoBehaviour
 
     [Header("Display Assets")]
     public GameObject panels;
+    public GameObject currentPanels;
     public List<SlicablePanelDisplay> displays;
     public TMP_Text qText;
+
+    [Header("Player Assets")]
+    public TestTouch touchInput;
+    public GameObject playerCursor;
+    Vector2 cursorOrigin;
 
     private void OnEnable()
     {
@@ -53,6 +59,8 @@ public class QuizManager : MonoBehaviour
 
     public void StartQuiz()
     {
+        SetupPanel();
+
         currentGroupIndex = Random.Range(0, groups.Count);
         currentGroup = groups[currentGroupIndex];
         currentQuestionIndex = Random.Range(0, currentGroup.pool.Count);
@@ -60,6 +68,20 @@ public class QuizManager : MonoBehaviour
         askedGroup.Add(currentGroupIndex);
         askedQuestion.Add(currentQuestionIndex);
         DisplayQuiz();
+    }
+
+    public void SetupPanel()
+    {
+        currentPanels = Instantiate(panels);
+
+        displays = new List<SlicablePanelDisplay>(currentPanels.GetComponentsInChildren<SlicablePanelDisplay>());
+    }
+
+    public void CleanPanel()
+    {
+        Destroy(currentPanels);
+
+        SetupPanel();
     }
 
     public void DisplayQuiz()
@@ -100,8 +122,12 @@ public class QuizManager : MonoBehaviour
 
     IEnumerator NextQuestion()
     {
-        yield return new WaitForSeconds(1f);
-        if(askedQuestion.Count == currentGroup.pool.Count)
+        //Reset cursor
+        touchInput.StopSwipe(cursorOrigin, 0f);
+        playerCursor.transform.position = cursorOrigin;
+        yield return new WaitForSeconds(2f);
+
+        if (askedQuestion.Count == currentGroup.pool.Count)
         {
             yield return null;
         }
@@ -117,6 +143,8 @@ public class QuizManager : MonoBehaviour
                 }
             }
             askedQuestion.Add(currentQuestionIndex);
+            
+            CleanPanel();
             DisplayQuiz();
             yield return null;
         }
@@ -124,6 +152,8 @@ public class QuizManager : MonoBehaviour
 
     private void Start()
     {
+        cursorOrigin = playerCursor.transform.position;
+
         StartQuiz();
     }
 }

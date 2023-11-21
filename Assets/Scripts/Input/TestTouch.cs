@@ -147,6 +147,11 @@ public class TestTouch : MonoBehaviour
         }
     }
 
+    public void StopSwipe(Vector2 position, float time)
+    {
+        SwipeEnd(position,time);
+    }
+
     private void Update()
     {
         //float step = speed * Time.deltaTime;

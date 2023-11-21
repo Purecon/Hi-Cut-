@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 62099825}
   - component: {fileID: 62099826}
   m_Layer: 0
-  m_Name: QuizManager
+  m_Name: <QuizManager>
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -174,24 +174,12 @@ MonoBehaviour:
   askedQuestion: 
   currentGroup: {fileID: 0}
   currentQuestion: {fileID: 0}
-  panels: {fileID: 0}
-  displays:
-  - {fileID: 691589676}
-  - {fileID: 206205665}
-  - {fileID: 687749821}
-  - {fileID: 1578224796}
+  panels: {fileID: 5516207843563523715, guid: ec741da0d02113b45b2445e3e7b2d686, type: 3}
+  currentPanels: {fileID: 0}
+  displays: []
   qText: {fileID: 1238311824}
---- !u!114 &206205665 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9042308761969325199, guid: ec741da0d02113b45b2445e3e7b2d686, type: 3}
-  m_PrefabInstance: {fileID: 5516207843612566895}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb1e221b2d432aa45901cf90a54c2264, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  touchInput: {fileID: 1690186865}
+  playerCursor: {fileID: 1690186862}
 --- !u!1 &328570086
 GameObject:
   m_ObjectHideFlags: 0
@@ -443,28 +431,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &687749821 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9042308762991546911, guid: ec741da0d02113b45b2445e3e7b2d686, type: 3}
-  m_PrefabInstance: {fileID: 5516207843612566895}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb1e221b2d432aa45901cf90a54c2264, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &691589676 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3163121885435956475, guid: ec741da0d02113b45b2445e3e7b2d686, type: 3}
-  m_PrefabInstance: {fileID: 5516207843612566895}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb1e221b2d432aa45901cf90a54c2264, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &951475779
 GameObject:
   m_ObjectHideFlags: 0
@@ -817,17 +783,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1238311822}
   m_CullTransparentMesh: 1
---- !u!114 &1578224796 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9042308761767798061, guid: ec741da0d02113b45b2445e3e7b2d686, type: 3}
-  m_PrefabInstance: {fileID: 5516207843612566895}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb1e221b2d432aa45901cf90a54c2264, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1683179395
 GameObject:
   m_ObjectHideFlags: 0
@@ -904,6 +859,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1683179395}
   m_CullTransparentMesh: 1
+--- !u!1 &1690186862 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 111455367930641964, guid: d6412f3214e8fed43a9fa80f85504946, type: 3}
+  m_PrefabInstance: {fileID: 111455368609287877}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1690186865 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 111455367930641967, guid: d6412f3214e8fed43a9fa80f85504946, type: 3}
+  m_PrefabInstance: {fileID: 111455368609287877}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1690186862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ccd45d718708504caad299fe13056ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1862693406
 GameObject:
   m_ObjectHideFlags: 0
@@ -1388,6 +1359,10 @@ PrefabInstance:
     - target: {fileID: 5516207843563523715, guid: ec741da0d02113b45b2445e3e7b2d686, type: 3}
       propertyPath: m_Name
       value: Panels
+      objectReference: {fileID: 0}
+    - target: {fileID: 5516207843563523715, guid: ec741da0d02113b45b2445e3e7b2d686, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5516207843742642629, guid: ec741da0d02113b45b2445e3e7b2d686, type: 3}
       propertyPath: m_Camera
