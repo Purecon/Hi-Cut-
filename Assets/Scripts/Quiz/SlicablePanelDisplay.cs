@@ -6,4 +6,5 @@ using TMPro;
 public class SlicablePanelDisplay : MonoBehaviour
 {
     public TMP_Text displayText;
+    public TMP_Text explanationDisplayText;
 }

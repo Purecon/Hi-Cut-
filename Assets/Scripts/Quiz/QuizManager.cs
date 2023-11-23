@@ -3,31 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class QuizManager : MonoBehaviour
+public class QuizManager : Singleton<QuizManager>
 {
     [Header("Quiz Assets")]
     public List<QuizGroup> groups;
-
     public int currentGroupIndex = 0;
     public int currentQuestionIndex = 0;
     public List<int> askedGroup;
     public List<int> askedQuestion;
-    public QuizGroup currentGroup;
-    public QuestionScriptable currentQuestion;
+    QuizGroup currentGroup;
+    QuestionScriptable currentQuestion;
 
     [Header("Display Assets")]
     public GameObject panels;
-    public GameObject currentPanels;
-    public List<SlicablePanelDisplay> displays;
+    GameObject currentPanels;
+    List<SlicablePanelDisplay> displays;
     public TMP_Text qText;
+    public GameObject qGroup;
 
+    /*
     [Header("Player Assets")]
-    public TestTouch touchInput;
-    public GameObject playerCursor;
-    public Animator playerCharAnimator;
-    Vector2 cursorOrigin;
+    public PlayerCharacter playerCharacter;
+    */
 
-    bool nextGroup = true;
+    bool nextGroup = false;
 
     private void OnEnable()
     {
@@ -36,42 +35,44 @@ public class QuizManager : MonoBehaviour
 
     public void SliceAnswer(GameObject panel)
     {
-        Debug.LogFormat("Object sliced! {0}", panel.name);
+        //Debug.LogFormat("Object sliced! {0}", panel.name);
         SlicablePanelDisplay display = panel.GetComponent<SlicablePanelDisplay>();
         SlicableObject sliceObj = panel.GetComponent<SlicableObject>();
-
-        if (display.displayText.text == currentQuestion.answer)
+        if (!sliceObj.isTutorial)
         {
-            Debug.Log("Answer correct 正解");
-
-            sliceObj.Slice();
-
-            foreach (SlicablePanelDisplay dp in displays)
+            if (display.displayText.text == currentQuestion.answer)
             {
-                if(dp.name != panel.name)
+                Debug.Log("Answer correct 正解");
+
+                sliceObj.Slice();
+
+                foreach (SlicablePanelDisplay dp in displays)
                 {
-                    SlicableObject slice = dp.GetComponent<SlicableObject>();
-                    slice.isSlicable = false;
+                    if (dp.name != panel.name)
+                    {
+                        SlicableObject slice = dp.GetComponent<SlicableObject>();
+                        slice.isSlicable = false;
+                    }
                 }
+
+                StartCoroutine(NextQuestion());
             }
+            else
+            {
+                Debug.Log("Answer wrong ブー"); //不正解
 
-            StartCoroutine(NextQuestion());
-        }
-        else
-        {
-            Debug.Log("Answer wrong ブー"); //不正解
-
-            //ShakeBehavior.InvokeShakeEvent(1f);
-            sliceObj.WrongSlice();
+                //ShakeBehavior.InvokeShakeEvent(1f);
+                sliceObj.WrongSlice();
+            }
         }
     }
 
-    public void StartQuiz()
+    public void StartQuiz(int groupIndex)
     {
         SetupPanel();
 
         //currentGroupIndex = Random.Range(0, groups.Count);
-        currentGroupIndex = 0;
+        currentGroupIndex = groupIndex;
         currentGroup = groups[currentGroupIndex];
         currentQuestionIndex = Random.Range(0, currentGroup.pool.Count);
         currentQuestion = currentGroup.pool[currentQuestionIndex];
@@ -83,6 +84,8 @@ public class QuizManager : MonoBehaviour
     public void SetupPanel()
     {
         currentPanels = Instantiate(panels);
+        qGroup.SetActive(false);
+        currentPanels.SetActive(false);
 
         displays = new List<SlicablePanelDisplay>(currentPanels.GetComponentsInChildren<SlicablePanelDisplay>());
     }
@@ -99,6 +102,8 @@ public class QuizManager : MonoBehaviour
         Debug.LogFormat("[Group {0}]", currentGroup);
         //Debug.LogFormat("[Question {0}]", currentQuestion.ID);
         //Debug.LogFormat("What is {0}? Answer: {1}", currentQuestion.question,currentQuestion.answer);
+        qGroup.SetActive(true);
+        currentPanels.SetActive(true);
         qText.text = currentQuestion.question;
 
         List<string> answers = new List<string>();
@@ -132,16 +137,8 @@ public class QuizManager : MonoBehaviour
 
     IEnumerator NextQuestion()
     {
-        //Reset cursor
-        playerCharAnimator.SetBool("IsAttacking", true);
-        touchInput.StopSwipe(cursorOrigin, 0f);
-        touchInput.enableMove = false;
-        playerCursor.transform.position = cursorOrigin;
-        playerCursor.SetActive(false);
-
+        PlayerCharacter.Instance.StartCharacterAttack();
         yield return new WaitForSeconds(2f);
-        playerCharAnimator.SetBool("IsAttacking", false);
-        playerCursor.SetActive(true);
 
         if (askedQuestion.Count == currentGroup.pool.Count)
         {
@@ -160,13 +157,18 @@ public class QuizManager : MonoBehaviour
                     currentQuestion = currentGroup.pool[currentQuestionIndex];
                     askedQuestion.Add(currentQuestionIndex);
 
-                    touchInput.enableMove = true;
                     CleanPanel();
                     DisplayQuiz();
                     yield return null;
                 }
             }
-            yield return null;
+            else
+            {
+                CleanPanel();
+
+                GameManager.Instance.NextStage();
+                yield return null;
+            }
         }
         else
         {
@@ -180,8 +182,6 @@ public class QuizManager : MonoBehaviour
                 }
             }
             askedQuestion.Add(currentQuestionIndex);
-
-            touchInput.enableMove = true;
             CleanPanel();
             DisplayQuiz();
             yield return null;
@@ -190,8 +190,8 @@ public class QuizManager : MonoBehaviour
 
     private void Start()
     {
-        cursorOrigin = playerCursor.transform.position;
+        
 
-        StartQuiz();
+        //StartQuiz();
     }
 }
