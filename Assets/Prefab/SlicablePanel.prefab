@@ -1151,6 +1151,7 @@ MonoBehaviour:
   slicedEffect: {fileID: 4762296842876515467}
   unslicedSprite: {fileID: 6240037939916540050}
   isSlicable: 1
+  isTutorial: 0
 --- !u!114 &3598721518609570816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1164,6 +1165,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   displayText: {fileID: 6811293305398003537}
+  explanationDisplayText: {fileID: 0}
 --- !u!1 &6240037939576392293
 GameObject:
   m_ObjectHideFlags: 0

@@ -30,6 +30,8 @@ public class GameManager : Singleton<GameManager>
         if(stageIndex == level.StageList.Count - 1)
         {
             Debug.Log("Finish");
+
+            SoundManager.Instance.PlaySound("StageFinished", 0.75f);
         }
         else
         {

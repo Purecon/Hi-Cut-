@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
+using DG.Tweening;
 public class QuizManager : Singleton<QuizManager>
 {
     [Header("Quiz Assets")]
@@ -13,6 +13,7 @@ public class QuizManager : Singleton<QuizManager>
     public List<int> askedQuestion;
     QuizGroup currentGroup;
     QuestionScriptable currentQuestion;
+    public QuizTimer quizTimer;
 
     [Header("Display Assets")]
     public GameObject panels;
@@ -25,12 +26,12 @@ public class QuizManager : Singleton<QuizManager>
     [Header("Player Assets")]
     public PlayerCharacter playerCharacter;
     */
-
-    bool nextGroup = false;
+    bool firstTime = true;
 
     private void OnEnable()
     {
         SlicableObject.OnSliced += SliceAnswer;
+        QuizTimer.QuizTimeUp += TimeOut;
     }
 
     public void SliceAnswer(GameObject panel)
@@ -55,22 +56,28 @@ public class QuizManager : Singleton<QuizManager>
                     }
                 }
 
-                StartCoroutine(NextQuestion());
+                quizTimer.StopTime();
+                StartCoroutine(NextQuestion(true));
             }
             else
             {
                 Debug.Log("Answer wrong ブー"); //不正解
 
-                //ShakeBehavior.InvokeShakeEvent(1f);
+                quizTimer.PenaltyTime();
                 sliceObj.WrongSlice();
             }
         }
     }
 
+    public void TimeOut()
+    {
+        Debug.Log("Time up ");
+        SoundManager.Instance.PlaySound("QuizWrong", 0.7f);
+        StartCoroutine(NextQuestion(false));
+    }
+
     public void StartQuiz(int groupIndex)
     {
-        SetupPanel();
-
         //currentGroupIndex = Random.Range(0, groups.Count);
         currentGroupIndex = groupIndex;
         currentGroup = groups[currentGroupIndex];
@@ -78,12 +85,18 @@ public class QuizManager : Singleton<QuizManager>
         currentQuestion = currentGroup.pool[currentQuestionIndex];
         askedGroup.Add(currentGroupIndex);
         askedQuestion.Add(currentQuestionIndex);
+
+        firstTime = true;
+        SetupPanel();
         DisplayQuiz();
     }
 
     public void SetupPanel()
     {
         currentPanels = Instantiate(panels);
+        CanvasGroup canvasGroup = qGroup.GetComponent<CanvasGroup>();
+        canvasGroup.alpha = 1f;
+        canvasGroup.DOFade(1, 0.5f);
         qGroup.SetActive(false);
         currentPanels.SetActive(false);
 
@@ -103,8 +116,21 @@ public class QuizManager : Singleton<QuizManager>
         //Debug.LogFormat("[Question {0}]", currentQuestion.ID);
         //Debug.LogFormat("What is {0}? Answer: {1}", currentQuestion.question,currentQuestion.answer);
         qGroup.SetActive(true);
+        CanvasGroup canvasGroup = qGroup.GetComponent<CanvasGroup>();
+        RectTransform rectTransform = qGroup.GetComponent<RectTransform>();
+        canvasGroup.alpha = 0f;
+        if (firstTime)
+        {
+            rectTransform.localPosition = new Vector2(0f, -1500f);
+            rectTransform.DOAnchorPos(new Vector2(0f, -1707f), 0.5f, false).SetEase(Ease.OutElastic);
+            firstTime = false;
+        }
+        canvasGroup.DOFade(1, 0.5f);
         currentPanels.SetActive(true);
         qText.text = currentQuestion.question;
+
+        //QuizTimer
+        quizTimer.StartTime();
 
         List<string> answers = new List<string>();
         //Need 4 answer
@@ -135,40 +161,25 @@ public class QuizManager : Singleton<QuizManager>
         }
     }
 
-    IEnumerator NextQuestion()
+    IEnumerator NextQuestion(bool answeredCorrectly)
     {
-        PlayerCharacter.Instance.StartCharacterAttack();
+        if (answeredCorrectly)
+        {
+            PlayerCharacter.Instance.StartCharacterAttack();
+        }
+        else
+        {
+            PlayerCharacter.Instance.StartResetCursor();
+        }
+        
         yield return new WaitForSeconds(2f);
 
         if (askedQuestion.Count == currentGroup.pool.Count)
         {
-            //NOTE: Currently used this instead of different level (subject to change)
-            if (nextGroup)
-            {
-                if (askedGroup.Count != groups.Count)
-                {
-                    currentGroupIndex++;
-                    currentGroup = groups[currentGroupIndex];
-                    askedGroup.Add(currentGroupIndex);
-                    Debug.LogFormat("[Group {0}]", currentGroup);
+            CleanPanel();
 
-                    askedQuestion = new List<int>();
-                    currentQuestionIndex = Random.Range(0, currentGroup.pool.Count);
-                    currentQuestion = currentGroup.pool[currentQuestionIndex];
-                    askedQuestion.Add(currentQuestionIndex);
-
-                    CleanPanel();
-                    DisplayQuiz();
-                    yield return null;
-                }
-            }
-            else
-            {
-                CleanPanel();
-
-                GameManager.Instance.NextStage();
-                yield return null;
-            }
+            GameManager.Instance.NextStage();
+            yield return null;
         }
         else
         {

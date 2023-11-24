@@ -19,6 +19,15 @@ public class SlicableObject : MonoBehaviour
     //Event
     public static event Action<GameObject> OnSliced;
 
+    private void Start()
+    {
+        //Tweening
+        Vector3 originalScale = transform.localScale;
+        transform.localScale = Vector3.zero;
+        float scaleSpeed = 0.25f;
+        transform.DOScale(originalScale, scaleSpeed);
+    }
+
     public void SetSlicedObject(GameObject slicedObject)
     {
         this.slicedObject = slicedObject;

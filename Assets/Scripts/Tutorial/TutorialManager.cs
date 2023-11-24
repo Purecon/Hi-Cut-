@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using DG.Tweening;
 
 public class TutorialManager : Singleton<TutorialManager>
 {
@@ -17,7 +18,8 @@ public class TutorialManager : Singleton<TutorialManager>
     GameObject currentPanels;
     SlicablePanelDisplay display;
     public GameObject tGroup;
-    
+    bool firstTime = true;
+
     private void OnEnable()
     {
         SlicableObject.OnSliced += SliceAnswer;
@@ -29,6 +31,7 @@ public class TutorialManager : Singleton<TutorialManager>
         currentGroup = groups[currentGroupIndex];
         currentQuestionIndex = 0;
         currentQuestion = currentGroup.pool[currentQuestionIndex];
+        firstTime = true;
         SetupPanel();
         DisplayTutorial();
     }
@@ -36,6 +39,9 @@ public class TutorialManager : Singleton<TutorialManager>
     public void SetupPanel()
     {
         currentPanels = Instantiate(panels);
+        CanvasGroup canvasGroup = tGroup.GetComponent<CanvasGroup>();
+        canvasGroup.alpha = 1f;
+        canvasGroup.DOFade(1, 0.5f);
         tGroup.SetActive(false);
         currentPanels.SetActive(false);
 
@@ -52,7 +58,18 @@ public class TutorialManager : Singleton<TutorialManager>
     public void DisplayTutorial()
     {
         tGroup.SetActive(true);
+        CanvasGroup canvasGroup = tGroup.GetComponent<CanvasGroup>();
+        RectTransform rectTransform = tGroup.GetComponent<RectTransform>();
+        canvasGroup.alpha = 0f;
+        if (firstTime)
+        {
+            rectTransform.localPosition = new Vector2(0f, -1500f);
+            rectTransform.DOAnchorPos(new Vector2(0f, -1707f), 0.5f, false).SetEase(Ease.OutElastic);
+            firstTime = false;
+        }
+        canvasGroup.DOFade(1, 0.5f);
         currentPanels.SetActive(true);
+
         display.displayText.text = currentQuestion.question;
         display.explanationDisplayText.text = currentQuestion.answer;
     }

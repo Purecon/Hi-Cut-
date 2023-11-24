@@ -30,7 +30,23 @@ public class PlayerCharacter : Singleton<PlayerCharacter>
         playerCursor.SetActive(true);
     }
 
+    public void StartResetCursor()
+    {
+        StartCoroutine(ResetCursor());
+    }
 
+    IEnumerator ResetCursor()
+    {
+        //Reset cursor
+        touchInput.StopSwipe(cursorOrigin, 0f);
+        touchInput.enableMove = false;
+        playerCursor.transform.position = cursorOrigin;
+        playerCursor.SetActive(false);
+
+        yield return new WaitForSeconds(2f);
+        touchInput.enableMove = true;
+        playerCursor.SetActive(true);
+    }
 
 
     //EnableMove
