@@ -10,10 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d39af27e091c57948a3db87801b5f154, type: 3}
-  m_Name: TestLevel
+  m_Name: TestLevelBattle
   m_EditorClassIdentifier: 
   StageList:
-  - levelType: 0
-    groupNumber: 1
   - levelType: 1
     groupNumber: 1

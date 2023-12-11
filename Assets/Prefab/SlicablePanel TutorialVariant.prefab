@@ -143,7 +143,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6240037939474506077, guid: 029d4b1890429cb4a8fc8bc473eacb2c, type: 3}
       propertyPath: m_Name
-      value: SlicablePanel
+      value: SlicablePanel TutorialVariant
       objectReference: {fileID: 0}
     - target: {fileID: 6240037939474506078, guid: 029d4b1890429cb4a8fc8bc473eacb2c, type: 3}
       propertyPath: isTutorial
@@ -206,6 +206,10 @@ PrefabInstance:
       value: "\u3042"
       objectReference: {fileID: 0}
     - target: {fileID: 6811293305398003537, guid: 029d4b1890429cb4a8fc8bc473eacb2c, type: 3}
+      propertyPath: m_fontSize
+      value: 64.45
+      objectReference: {fileID: 0}
+    - target: {fileID: 6811293305398003537, guid: 029d4b1890429cb4a8fc8bc473eacb2c, type: 3}
       propertyPath: m_fontAsset
       value: 
       objectReference: {fileID: 11400000, guid: 73efd110800510942a8bc409055d4711, type: 2}
@@ -213,6 +217,10 @@ PrefabInstance:
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 1880075847536862179, guid: 73efd110800510942a8bc409055d4711, type: 2}
+    - target: {fileID: 6811293305398003537, guid: 029d4b1890429cb4a8fc8bc473eacb2c, type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 029d4b1890429cb4a8fc8bc473eacb2c, type: 3}
 --- !u!224 &4218435183800373866 stripped

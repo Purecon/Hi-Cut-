@@ -27,7 +27,7 @@ public class GameManager : Singleton<GameManager>
 
     public void NextStage()
     {
-        if(stageIndex == level.StageList.Count - 1)
+        if(stageIndex >= level.StageList.Count)
         {
             Debug.Log("Finish");
 

@@ -22,6 +22,13 @@ public class QuizManager : Singleton<QuizManager>
     public TMP_Text qText;
     public GameObject qGroup;
 
+    [Header("Enemy")]
+    public Enemy enemy;
+    //Health bar
+    public GameObject enemyGameObject;
+    public GameObject enemyHealthBar;
+    public GameObject playerHealthBar;
+
     /*
     [Header("Player Assets")]
     public PlayerCharacter playerCharacter;
@@ -78,7 +85,7 @@ public class QuizManager : Singleton<QuizManager>
 
     public void StartQuiz(int groupIndex)
     {
-        //currentGroupIndex = Random.Range(0, groups.Count);
+        //Set questions
         currentGroupIndex = groupIndex;
         currentGroup = groups[currentGroupIndex];
         currentQuestionIndex = Random.Range(0, currentGroup.pool.Count);
@@ -86,6 +93,11 @@ public class QuizManager : Singleton<QuizManager>
         askedGroup.Add(currentGroupIndex);
         askedQuestion.Add(currentQuestionIndex);
 
+        //Health
+        PlayerCharacter.Instance.ResetCurrHealth();
+        enemy.ResetCurrHealth();
+
+        //Display
         firstTime = true;
         SetupPanel();
         DisplayQuiz();
@@ -99,6 +111,10 @@ public class QuizManager : Singleton<QuizManager>
         canvasGroup.DOFade(1, 0.5f);
         qGroup.SetActive(false);
         currentPanels.SetActive(false);
+        //Hide enemy health bar
+        enemyHealthBar.SetActive(false);
+        playerHealthBar.SetActive(false);
+        enemyGameObject.SetActive(false);
 
         displays = new List<SlicablePanelDisplay>(currentPanels.GetComponentsInChildren<SlicablePanelDisplay>());
     }
@@ -154,6 +170,11 @@ public class QuizManager : Singleton<QuizManager>
                 display.displayText.text = answers[b];
                 answers.RemoveAt(b);
             }
+
+            //Display Enemy
+            enemyHealthBar.SetActive(true);
+            playerHealthBar.SetActive(true);
+            enemyGameObject.SetActive(true);
         }
         else
         {
@@ -166,6 +187,8 @@ public class QuizManager : Singleton<QuizManager>
         if (answeredCorrectly)
         {
             PlayerCharacter.Instance.StartCharacterAttack();
+            //Attack the enemy
+            enemy.ChangeHealth(-2f);
         }
         else
         {
@@ -173,16 +196,23 @@ public class QuizManager : Singleton<QuizManager>
         }
         
         yield return new WaitForSeconds(2f);
-
-        if (askedQuestion.Count == currentGroup.pool.Count)
+        
+        if (enemy.CheckDeath())
         {
             CleanPanel();
 
             GameManager.Instance.NextStage();
-            yield return null;
         }
         else
         {
+            if (askedQuestion.Count >= currentGroup.pool.Count)
+            {
+                askedQuestion = new List<int>();
+            }
+
+            //TODO: Enemy attack
+            PlayerCharacter.Instance.ChangeHealth(-1f);
+
             while (askedQuestion.Contains(currentQuestionIndex))
             {
                 int tempCurrentQuestionIndex = Random.Range(0, currentGroup.pool.Count);
@@ -195,8 +225,9 @@ public class QuizManager : Singleton<QuizManager>
             askedQuestion.Add(currentQuestionIndex);
             CleanPanel();
             DisplayQuiz();
-            yield return null;
         }
+
+        yield return null;
     }
 
     private void Start()
