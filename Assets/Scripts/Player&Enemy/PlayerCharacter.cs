@@ -67,6 +67,11 @@ public class PlayerCharacter : Singleton<PlayerCharacter>
 
     public void ChangeHealth(float change)
     {
+        if (change < 0)
+        {
+            playerCharAnimator.Play("Damage");
+        }
+
         currPlayerHealth += change;
         Mathf.Clamp(currPlayerHealth, 0, maxPlayerHealth);
         healthBar.value = (currPlayerHealth / maxPlayerHealth);

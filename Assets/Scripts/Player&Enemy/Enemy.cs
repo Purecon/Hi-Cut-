@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class Enemy : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class Enemy : MonoBehaviour
     public float currEnemyHealth = 10f;
     public float maxEnemyHealth = 10f;
     public Slider healthBar;
+    [Header("Enemy GO")]
+    public GameObject enemyGO;
 
     public void ResetCurrHealth()
     {
@@ -22,6 +25,19 @@ public class Enemy : MonoBehaviour
     }
     public void ChangeHealth(float change)
     {
+        if (change < 0)
+        {
+            //Tweening
+            Vector3 originalScale = enemyGO.transform.localScale;
+            enemyGO.transform.DOShakeRotation(0.75f, new Vector3(0, 0, 30f), 5);
+            float scaleSpeed = 0.5f;
+            var sequence = DOTween.Sequence()
+                .Append(enemyGO.GetComponent<SpriteRenderer>().DOColor(Color.red, scaleSpeed/2))
+                .Append(enemyGO.transform.DOScale(new Vector3(originalScale.x + 0.5f, originalScale.y + 0.5f, originalScale.z + 0.5f), scaleSpeed))
+                .Append(enemyGO.transform.DOScale(originalScale, scaleSpeed))
+                .Append(enemyGO.GetComponent<SpriteRenderer>().DOColor(Color.white, scaleSpeed/2));
+        }
+
         currEnemyHealth += change;
         Mathf.Clamp(currEnemyHealth, 0, maxEnemyHealth);
         healthBar.value = (currEnemyHealth / maxEnemyHealth);

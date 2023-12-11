@@ -2694,6 +2694,7 @@ MonoBehaviour:
   currEnemyHealth: 10
   maxEnemyHealth: 10
   healthBar: {fileID: 1316992224}
+  enemyGO: {fileID: 12557535}
 --- !u!1 &460557065
 GameObject:
   m_ObjectHideFlags: 0
@@ -2865,7 +2866,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.27284458, g: 0.26010147, b: 0.3301887, a: 0}
+  m_BackGroundColor: {r: 0.36078432, g: 0.3137255, b: 0.28235295, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
