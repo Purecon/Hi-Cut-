@@ -10,6 +10,8 @@ public class Enemy : MonoBehaviour
     public float currEnemyHealth = 10f;
     public float maxEnemyHealth = 10f;
     public Slider healthBar;
+    [Header("Enemy Attack")]
+    public float attackDamage = 1f;
     [Header("Enemy GO")]
     public GameObject enemyGO;
 
@@ -41,6 +43,17 @@ public class Enemy : MonoBehaviour
         currEnemyHealth += change;
         Mathf.Clamp(currEnemyHealth, 0, maxEnemyHealth);
         healthBar.value = (currEnemyHealth / maxEnemyHealth);
+    }
+
+    public void EnemyAttack()
+    {
+        //Tweening attack anim
+        Vector3 originalScale = enemyGO.transform.localScale;
+        float scaleSpeed = 0.5f;
+        var sequence = DOTween.Sequence()
+            .Append(enemyGO.transform.DOScale(new Vector3(originalScale.x + 1f, originalScale.y + 1f, originalScale.z + 1f), scaleSpeed))
+            .Append(enemyGO.transform.DOScale(originalScale, scaleSpeed));
+        PlayerCharacter.Instance.ChangeHealth(-attackDamage);
     }
 
     private void Start()

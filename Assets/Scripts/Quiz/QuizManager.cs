@@ -210,8 +210,9 @@ public class QuizManager : Singleton<QuizManager>
                 askedQuestion = new List<int>();
             }
 
-            //TODO: Enemy attack
-            PlayerCharacter.Instance.ChangeHealth(-1f);
+            //Enemy attack
+            //PlayerCharacter.Instance.ChangeHealth(-1f);
+            enemy.EnemyAttack();
 
             while (askedQuestion.Contains(currentQuestionIndex))
             {
