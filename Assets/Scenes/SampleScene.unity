@@ -481,6 +481,7 @@ MonoBehaviour:
   enemyGameObject: {fileID: 374921265}
   enemyHealthBar: {fileID: 238515438}
   playerHealthBar: {fileID: 460557065}
+  defendPanel: {fileID: 6030689911351531574, guid: 08e196e7b56be4745bd99575603ca8bb, type: 3}
 --- !u!114 &62099827
 MonoBehaviour:
   m_ObjectHideFlags: 0

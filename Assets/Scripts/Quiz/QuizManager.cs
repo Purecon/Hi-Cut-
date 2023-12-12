@@ -28,6 +28,8 @@ public class QuizManager : Singleton<QuizManager>
     public GameObject enemyGameObject;
     public GameObject enemyHealthBar;
     public GameObject playerHealthBar;
+    //Defend object
+    public GameObject defendPanel;
 
     /*
     [Header("Player Assets")]
@@ -205,30 +207,95 @@ public class QuizManager : Singleton<QuizManager>
         }
         else
         {
-            if (askedQuestion.Count >= currentGroup.pool.Count)
-            {
-                askedQuestion = new List<int>();
-            }
+            //Add defend from enemy attack
+            //CleanPanel();
+            //DisplayDefend();
 
             //Enemy attack
-            //PlayerCharacter.Instance.ChangeHealth(-1f);
-            enemy.EnemyAttack();
-
-            while (askedQuestion.Contains(currentQuestionIndex))
-            {
-                int tempCurrentQuestionIndex = Random.Range(0, currentGroup.pool.Count);
-                if (!askedQuestion.Contains(tempCurrentQuestionIndex))
-                {
-                    currentQuestionIndex = tempCurrentQuestionIndex;
-                    currentQuestion = currentGroup.pool[currentQuestionIndex];
-                }
-            }
-            askedQuestion.Add(currentQuestionIndex);
-            CleanPanel();
-            DisplayQuiz();
+            enemy.EnemyAttack(true);
+            AskQuestion();
         }
 
         yield return null;
+    }
+
+    public void AskQuestion()
+    {
+        if (askedQuestion.Count >= currentGroup.pool.Count)
+        {
+            askedQuestion = new List<int>();
+        }
+
+        while (askedQuestion.Contains(currentQuestionIndex))
+        {
+            int tempCurrentQuestionIndex = Random.Range(0, currentGroup.pool.Count);
+            if (!askedQuestion.Contains(tempCurrentQuestionIndex))
+            {
+                currentQuestionIndex = tempCurrentQuestionIndex;
+                currentQuestion = currentGroup.pool[currentQuestionIndex];
+            }
+        }
+        askedQuestion.Add(currentQuestionIndex);
+        CleanPanel();
+        DisplayQuiz();
+    }
+
+    public void DisplayDefend()
+    {
+        GameObject defendGO = Instantiate(defendPanel);
+        //DefendPanel
+        DefendPanel defendPanelScript = defendGO.GetComponentInChildren<DefendPanel>(); 
+
+        //Need 4 answer
+        string correctChoice = currentQuestion.question;
+        List<string> choices = new List<string>();
+        choices.Add(correctChoice); //Correct one'
+        int numOfChoices = 4;
+        if (currentGroup.pool.Count >= numOfChoices)
+        {
+            while (choices.Count < numOfChoices)
+            {
+                int a = Random.Range(0, currentGroup.pool.Count);
+                string tempChoice = currentGroup.pool[a].question;
+                if (!choices.Contains(tempChoice))
+                {
+                    choices.Add(tempChoice);
+                }
+            }
+            //Debug.LogFormat("The answers: {0}",answers.ToString());
+            int index = 0;
+            foreach (TMP_Text choiceText in defendPanelScript.buttonTexts)
+            {
+                int b = Random.Range(0, choices.Count);
+                choiceText.text = choices[b];
+                if (choices[b] == correctChoice)
+                {
+                    defendPanelScript.correctIndex = index;
+                }
+                choices.RemoveAt(b);
+                index++;
+            }
+        }
+
+        //Display Enemy
+        enemyHealthBar.SetActive(true);
+        playerHealthBar.SetActive(true);
+        enemyGameObject.SetActive(true);
+    }
+
+    IEnumerator AskQuestionDelayed(float waitTime)
+    {
+        yield return new WaitForSeconds(2f);
+        AskQuestion();
+    }
+    
+    public void Defend(bool succeed)
+    {
+        //Lock cursor
+        PlayerCharacter.Instance.StartResetCursor();
+        //Succeed defense
+        enemy.EnemyAttack(!succeed);
+        StartCoroutine(AskQuestionDelayed(1f));
     }
 
     private void Start()

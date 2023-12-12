@@ -75,6 +75,8 @@ public class PlayerCharacter : Singleton<PlayerCharacter>
         currPlayerHealth += change;
         Mathf.Clamp(currPlayerHealth, 0, maxPlayerHealth);
         healthBar.value = (currPlayerHealth / maxPlayerHealth);
+
+        //TODO: Check player death
     }
 
     //EnableMove

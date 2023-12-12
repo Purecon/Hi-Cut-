@@ -45,7 +45,7 @@ public class Enemy : MonoBehaviour
         healthBar.value = (currEnemyHealth / maxEnemyHealth);
     }
 
-    public void EnemyAttack()
+    public void EnemyAttack(bool succeed)
     {
         //Tweening attack anim
         Vector3 originalScale = enemyGO.transform.localScale;
@@ -53,7 +53,10 @@ public class Enemy : MonoBehaviour
         var sequence = DOTween.Sequence()
             .Append(enemyGO.transform.DOScale(new Vector3(originalScale.x + 1f, originalScale.y + 1f, originalScale.z + 1f), scaleSpeed))
             .Append(enemyGO.transform.DOScale(originalScale, scaleSpeed));
-        PlayerCharacter.Instance.ChangeHealth(-attackDamage);
+        if (succeed)
+        {
+            PlayerCharacter.Instance.ChangeHealth(-attackDamage);
+        }   
     }
 
     private void Start()
