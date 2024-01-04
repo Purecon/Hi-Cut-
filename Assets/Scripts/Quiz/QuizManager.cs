@@ -28,8 +28,12 @@ public class QuizManager : Singleton<QuizManager>
     public GameObject enemyGameObject;
     public GameObject enemyHealthBar;
     public GameObject playerHealthBar;
+
+    [Header("Enemy")]
     //Defend object
     public GameObject defendPanel;
+    public GameObject defendBubble;
+    public TMP_Text defendText;
 
     /*
     [Header("Player Assets")]
@@ -209,11 +213,20 @@ public class QuizManager : Singleton<QuizManager>
         {
             //Add defend from enemy attack
             //CleanPanel();
+            float randomFloat = Random.value;
+            if (randomFloat>0.5){
+                //Defend chance
+                CleanPanel();
+                DisplayDefend();
+                SoundManager.Instance.PlaySound("Bonk", 0.7f);
+            }
+            else
+            {
+                //Enemy attack
+                enemy.EnemyAttack(true);
+                AskQuestion();
+            }
             //DisplayDefend();
-
-            //Enemy attack
-            enemy.EnemyAttack(true);
-            AskQuestion();
         }
 
         yield return null;
@@ -281,11 +294,18 @@ public class QuizManager : Singleton<QuizManager>
         enemyHealthBar.SetActive(true);
         playerHealthBar.SetActive(true);
         enemyGameObject.SetActive(true);
+
+        //Display Defend Bubble
+        defendBubble.SetActive(true);
+        defendText.text = currentQuestion.answer;
     }
 
     IEnumerator AskQuestionDelayed(float waitTime)
     {
         yield return new WaitForSeconds(2f);
+
+        //Disable Defend Bubble
+        defendBubble.SetActive(false);
         AskQuestion();
     }
     
@@ -293,6 +313,17 @@ public class QuizManager : Singleton<QuizManager>
     {
         //Lock cursor
         PlayerCharacter.Instance.StartResetCursor();
+        //Dodge
+        if(succeed)
+        {
+            SoundManager.Instance.PlaySound("QuizRight", 0.7f);
+            PlayerCharacter.Instance.Dodge();
+        }
+        else
+        {
+            SoundManager.Instance.PlaySound("QuizWrong", 0.7f);
+        }
+        
         //Succeed defense
         enemy.EnemyAttack(!succeed);
         StartCoroutine(AskQuestionDelayed(1f));

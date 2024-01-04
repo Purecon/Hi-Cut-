@@ -79,6 +79,11 @@ public class PlayerCharacter : Singleton<PlayerCharacter>
         //TODO: Check player death
     }
 
+    public void Dodge()
+    {
+        playerCharAnimator.Play("Dodge");
+    }
+
     //EnableMove
     private void Start()
     {

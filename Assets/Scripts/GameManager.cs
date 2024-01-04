@@ -44,6 +44,7 @@ public class GameManager : Singleton<GameManager>
             {
                 quizManager.StartQuiz(stage.groupNumber);
             }
+            SoundManager.Instance.PlaySound("Stage",0.75f);
             stageIndex++;
         }
     }
